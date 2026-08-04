@@ -1,1 +1,374 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>👑 VIP Admin Login | Grocery Hub</title>
+
+    <meta name="robots" content="noindex, nofollow">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="DENY">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <script>
+        tailwind.config = { 
+            theme: { 
+                extend: { 
+                    colors: { 
+                        forest: '#022C22',
+                        emerald: '#059669',
+                        lightbg: '#F4F4F5'
+                    }, 
+                    fontFamily: { 
+                        sans: ['Plus Jakarta Sans', 'sans-serif'], 
+                        serif: ['Playfair Display', 'serif'] 
+                    } 
+                } 
+            } 
+        }
+    </script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none !important; -webkit-user-select: none !important; }
+        
+        body {
+            background: linear-gradient(135deg, #F4F4F5 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            padding: 20px;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 25px 80px rgba(2, 44, 34, 0.1), 0 10px 30px rgba(5, 150, 105, 0.05);
+            max-width: 420px;
+            width: 100%;
+            border-radius: 24px;
+        }
+
+        .input-field {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1.5px solid #e2e8f0;
+            color: #022C22;
+            height: 50px;
+            padding: 0 16px 0 44px;
+            border-radius: 12px;
+            width: 100%;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .input-field:focus {
+            border-color: #059669;
+            box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.15);
+            outline: none;
+            background: #ffffff;
+        }
+        .input-field::placeholder { color: #94a3b8; font-weight: 400; }
+
+        .btn-emerald {
+            background: linear-gradient(135deg, #022C22, #059669);
+            color: #ffffff;
+            height: 50px;
+            border-radius: 12px;
+            border: none;
+            width: 100%;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(5, 150, 105, 0.3);
+        }
+        .btn-emerald:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(5, 150, 105, 0.4);
+            background: linear-gradient(135deg, #047857, #10b981);
+        }
+        .btn-emerald:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
+        }
+        .shake-error { animation: shake 0.4s ease-in-out; }
+        
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-up { animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        
+        @keyframes pulseEmerald {
+            0%, 100% { box-shadow: 0 0 20px rgba(5, 150, 105, 0.15); }
+            50% { box-shadow: 0 0 50px rgba(5, 150, 105, 0.3); }
+        }
+        .pulse-emerald { animation: pulseEmerald 2.5s ease-in-out infinite; }
+
+        .badge-vip {
+            background: rgba(5, 150, 105, 0.1);
+            border: 1px solid rgba(5, 150, 105, 0.2);
+            padding: 4px 14px;
+            border-radius: 100px;
+            font-size: 9px;
+            font-weight: 700;
+            color: #059669;
+            letter-spacing: 1px;
+        }
+
+        #securityShield {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(2, 44, 34, 0.95);
+            z-index: 999999; display: none; justify-content: center; align-items: center;
+            backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+        }
+        #securityShield.show { display: flex; }
+        .shield-box {
+            background: rgba(239, 68, 68, 0.05);
+            border: 2px solid rgba(239, 68, 68, 0.3);
+            border-radius: 20px; padding: 40px 50px; max-width: 480px; text-align: center;
+        }
+        .shield-box i { font-size: 4.5rem; color: #ef4444; }
+        .shield-box h2 { font-size: 1.8rem; font-weight: 800; color: #fff; margin-top: 15px; font-family: 'Playfair Display', serif;}
+        .shield-box p { color: #cbd5e1; margin-top: 8px; font-size: 14px;}
+        .shield-btn {
+            margin-top: 2rem; background: #ef4444; color: white; border: none;
+            padding: 12px 40px; border-radius: 12px; font-weight: 700; cursor: pointer; transition: all 0.3s;
+        }
+        .shield-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(239, 68, 68, 0.4); }
+
+        .toast-success { background: rgba(16, 185, 129, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(16, 185, 129, 0.3); color: #fff; }
+        .toast-error { background: rgba(239, 68, 68, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(239, 68, 68, 0.3); color: #fff; }
+        
+        .icon-box {
+            width: 76px; height: 76px;
+            background: linear-gradient(135deg, #ffffff, #f0fdf4);
+            border: 2px solid #059669;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            color: #059669; font-size: 2.2rem;
+        }
+
+        @media (max-width: 480px) {
+            .glass { padding: 24px 20px !important; border-radius: 20px; }
+            .shield-box { padding: 30px 25px; }
+            .input-field { height: 46px; font-size: 13px; }
+            .btn-emerald { height: 46px; font-size: 13px; }
+        }
+        ::selection { background: transparent !important; }
+    </style>
+</head>
+<body>
+
+    <div id="securityShield">
+        <div class="shield-box">
+            <i class="fas fa-shield-halved"></i>
+            <h2>⚠️ SECURITY BREACH</h2>
+            <p>Unauthorized Developer Tools access detected.<br>All logs are being recorded to the main server.</p>
+            <button onclick="document.getElementById('securityShield').classList.remove('show')" class="shield-btn">
+                <i class="fas fa-unlock-alt mr-2"></i> Acknowledge
+            </button>
+        </div>
+    </div>
+
+    <div id="vipToast" class="fixed top-6 right-6 z-50 transform translate-x-full opacity-0 transition-all duration-500 flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-2xl backdrop-blur-sm min-w-[220px]">
+        <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold border border-white/20"><i class="fas fa-crown"></i></div>
+        <div>
+            <h4 class="text-xs font-bold tracking-wide" id="toastTitle">VIP ACCESS</h4>
+            <p class="text-[11px] font-medium" id="toastMsg">Welcome!</p>
+        </div>
+    </div>
+
+    <div class="glass rounded-3xl p-8 animate-fade-up border border-emerald/20" id="loginCard">
+        <div class="flex justify-center mb-6">
+            <div class="icon-box pulse-emerald shadow-[0_10px_20px_rgba(5,150,105,0.15)]">
+                <i class="fas fa-leaf"></i>
+            </div>
+        </div>
+
+        <div class="text-center mb-8">
+            <h2 class="font-serif text-3xl font-bold text-forest">Grocery <span class="text-emerald italic">Admin</span></h2>
+            <div class="flex justify-center mt-3">
+                <span class="badge-vip"><i class="fas fa-shield-check mr-1"></i> SECURE PORTAL</span>
+            </div>
+            <p class="text-[11px] font-bold tracking-wider uppercase text-gray-400 mt-4">Sign in to manage harvest engine</p>
+        </div>
+
+        <div id="errorBox" class="hidden bg-red-50 border border-red-200 text-red-600 rounded-xl p-3 text-xs mb-5 text-center font-bold flex items-center justify-center gap-2 shadow-sm">
+            <i class="fas fa-shield-cat text-lg"></i> <span id="errorText">ACCESS DENIED</span>
+        </div>
+
+        <form id="adminLoginForm" class="space-y-4" autocomplete="off">
+            <div>
+                <label class="block text-[11px] font-bold text-forest uppercase tracking-wider mb-1.5 ml-1">Email Address</label>
+                <div class="relative">
+                    <i class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                    <input type="email" id="loginEmail" required placeholder="admin@groceryhub.com" class="input-field" autocomplete="new-password">
+                </div>
+            </div>
+            <div>
+                <label class="block text-[11px] font-bold text-forest uppercase tracking-wider mb-1.5 ml-1">Master Password</label>
+                <div class="relative">
+                    <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                    <input type="password" id="loginPassword" required placeholder="••••••••" class="input-field" autocomplete="new-password">
+                </div>
+            </div>
+            <button type="submit" id="loginBtn" class="btn-emerald mt-2"><i class="fas fa-arrow-right-to-bracket mr-2"></i> Access Hub Dashboard</button>
+        </form>
+
+        <div class="text-center mt-6 text-xs font-bold text-gray-400 flex items-center justify-center gap-4 flex-wrap">
+            <a href="index.html" class="text-emerald hover:underline transition uppercase tracking-widest"><i class="fas fa-store mr-1"></i> View Store</a>
+            <span class="text-gray-300">|</span>
+            <span class="text-[9px] text-gray-400 font-mono tracking-widest">🔐 GH-v3.0</span>
+        </div>
+    </div>
+
+    <script type="module">
+        import { auth } from './firebase-config.js';
+        import { signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js";
+
+        // 🔐 ALLOWED ADMINS
+        const ALLOWED_ADMINS = [
+            "pradeepadmin111@gmail.com",
+            "apnabazzaradmin111@gmail.com"
+        ];
+
+        const form = document.getElementById('adminLoginForm');
+        const errorBox = document.getElementById('errorBox');
+        const errorText = document.getElementById('errorText');
+        const loginBtn = document.getElementById('loginBtn');
+        const emailField = document.getElementById('loginEmail');
+        const passwordField = document.getElementById('loginPassword');
+        const toast = document.getElementById('vipToast');
+        const toastMsg = document.getElementById('toastMsg');
+        const toastTitle = document.getElementById('toastTitle');
+        const loginCard = document.getElementById('loginCard');
+
+        // 🔐 ALREADY LOGGED IN CHECK
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                const userEmail = user.email.toLowerCase().trim();
+                if (ALLOWED_ADMINS.includes(userEmail)) {
+                    window.location.href = "admin.html"; // Admin Dashboard
+                }
+            }
+        });
+
+        // 🔐 TOAST HELPER
+        function showToast(message, type = "success") {
+            const isSuccess = type === "success";
+            toast.className = `fixed top-6 right-6 z-50 transform translate-x-full opacity-0 transition-all duration-500 flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-2xl backdrop-blur-sm min-w-[200px] ${isSuccess ? 'toast-success' : 'toast-error'}`;
+            toastTitle.innerHTML = isSuccess ? '<i class="fas fa-shield-check mr-1"></i> ACCESS GRANTED' : '<i class="fas fa-shield-xmark mr-1"></i> ACCESS DENIED';
+            toastMsg.textContent = message;
+            toast.classList.remove('translate-x-full', 'opacity-0');
+            toast.classList.add('translate-x-0', 'opacity-100');
+            setTimeout(() => {
+                toast.classList.remove('translate-x-0', 'opacity-100');
+                toast.classList.add('translate-x-full', 'opacity-0');
+            }, 3000);
+        }
+
+        // 🔐 LOGIN SUBMIT
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            errorBox.classList.add('hidden');
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Authenticating...`;
+
+            const email = emailField.value.trim();
+            const password = passwordField.value;
+
+            if (!email || !password) {
+                errorText.textContent = 'Please fill all fields';
+                errorBox.classList.remove('hidden');
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = `<i class="fas fa-arrow-right-to-bracket mr-2"></i> Access Hub Dashboard`;
+                return;
+            }
+
+            try {
+                // Firebase Login
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                const userEmail = userCredential.user.email.toLowerCase().trim();
+
+                if (!ALLOWED_ADMINS.includes(userEmail)) {
+                    showToast('Unauthorized admin access!', 'error');
+                    errorText.textContent = 'ACCESS DENIED: Not an Admin';
+                    errorBox.classList.remove('hidden');
+                    loginBtn.disabled = false;
+                    loginBtn.innerHTML = `<i class="fas fa-arrow-right-to-bracket mr-2"></i> Access Hub Dashboard`;
+                    passwordField.value = '';
+                    document.getElementById('securityShield').classList.add('show');
+                    return;
+                }
+
+                // Successful Login
+                localStorage.setItem("adminLoggedIn", "true");
+                localStorage.setItem("adminEmail", userEmail);
+
+                showToast(`Welcome Admin: ${userEmail}`, 'success');
+
+                setTimeout(() => {
+                    window.location.href = "admin.html"; // Admin Dashboard
+                }, 1500);
+
+            } catch (error) {
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = `<i class="fas fa-arrow-right-to-bracket mr-2"></i> Access Hub Dashboard`;
+                passwordField.value = '';
+                loginCard.classList.add('shake-error');
+
+                if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+                    errorText.textContent = 'ACCESS DENIED: Invalid Credentials';
+                    showToast('Invalid email or password!', 'error');
+                } else {
+                    errorText.textContent = 'Security Check Failed';
+                    showToast('Security check failed!', 'error');
+                }
+                errorBox.classList.remove('hidden');
+                setTimeout(() => loginCard.classList.remove('shake-error'), 500);
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => { passwordField.value = ''; });
+    </script>
+
+    <script>
+        document.addEventListener('contextmenu', function(e) { e.preventDefault(); return false; }, true);
+        document.onkeydown = function(e) {
+            if (e.keyCode === 123 ||
+                (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) ||
+                (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 83 || e.keyCode === 80))) {
+                e.preventDefault();
+                document.getElementById('securityShield').classList.add('show');
+                return false;
+            }
+        };
+        document.addEventListener('dragstart', function(e) { e.preventDefault(); return false; }, true);
+        document.addEventListener('selectstart', function(e) { e.preventDefault(); return false; }, true);
+        document.addEventListener('copy', function(e) { e.preventDefault(); return false; }, true);
+        document.getElementById('loginPassword').addEventListener('paste', function(e) { e.preventDefault(); return false; });
+
+        let debugCount = 0;
+        setInterval(function() {
+            const start = performance.now();
+            try { (function(){})['constructor']('debugger')(); } catch(e) {}
+            if (performance.now() - start > 100) {
+                debugCount++;
+                if (debugCount > 1) { document.getElementById('securityShield').classList.add('show'); }
+            } else { debugCount = 0; }
+        }, 1000);
+
+        console.log = function() {}; console.warn = function() {}; console.error = function() {};
+    </script>
+</body>
+</html>
