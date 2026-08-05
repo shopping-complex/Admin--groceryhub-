@@ -1,15 +1,13 @@
-
-
 // firebase-config.js
 
-// 🔥 Naye 12.17.0 CDN Links se Firebase aur Firestore import kar rahe hain
+// 1. CDN Links se Firebase Import kar rahe hain
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js";
 
-// Aapki details
+// 2. Aapki Firebase Configuration (Directly yahan likhiye)
 const firebaseConfig = {
-    apiKey: "AIzaSyDJBRGvsXS_0x6sKlLETdFq2_FckiX0ao8", // Yahan apna asli API key wapas daal dijiyega
+    apiKey: "AIzaSyDJBRGvsXS_0x6sKlLETdFq2_FckiX0ao8", // 🚨 Yahan Apni asli API key daalein
     authDomain: "grocery-hub-e8ae2.firebaseapp.com",
     projectId: "grocery-hub-e8ae2",
     storageBucket: "grocery-hub-e8ae2.firebasestorage.app",
@@ -18,11 +16,11 @@ const firebaseConfig = {
     measurementId: "G-B3JP3VPYX4"
 };
 
-// Initialize Firebase
+// 3. Firebase Initialize karein
 const app = initializeApp(firebaseConfig);
 
-// Initialize Services and Export them
+// 4. Firestore aur Auth ko export karein taaki baaki HTML files isko use kar sakein
 export const db = getFirestore(app);
 export const auth = getAuth(app);
 
-console.log("🔥 verify Successfully");
+console.log("🔥 Grocery Hub: Firebase CDN Initialized!");
