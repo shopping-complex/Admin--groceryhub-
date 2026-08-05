@@ -197,8 +197,7 @@
 
                 <div>
                     <label class="block text-xs text-forest uppercase tracking-wider mb-3 font-bold flex items-center gap-2"><i class="fas fa-medal text-emerald"></i> Quality Variant</label>
-                    <div class="flex flex-wrap gap-2.5" id="variantPickerBox">
-                        </div>
+                    <div class="flex flex-wrap gap-2.5" id="variantPickerBox"></div>
                 </div>
 
                 <div id="dynamicVariantUploads" class="space-y-4 bg-white/60 p-5 rounded-2xl border border-emerald/20 hidden shadow-inner">
@@ -334,8 +333,8 @@
     </main>
 
     <script type="module">
-        import { collection, doc, setDoc, getDoc, updateDoc, deleteDoc, onSnapshot, addDoc, collectionGroup, query } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
-        import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js";
+        import { collection, doc, setDoc, getDoc, updateDoc, deleteDoc, onSnapshot, addDoc, collectionGroup, query } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
         import { db, auth } from './firebase-config.js';
 
         const ALLOWED_ADMINS = ["pradeepadmin111@gmail.com", "apnabazzaradmin111@gmail.com"];
@@ -380,7 +379,6 @@
             document.getElementById(`section-${tabName}`).classList.remove('hidden');
         };
 
-        // --- ORDER TAB SWITCHER & FILTER ---
         window.switchOrderTab = function(type) {
             window.currentOrderTab = type;
             document.querySelectorAll('.order-tab').forEach(b => { b.classList.remove('active', 'border-transparent'); b.classList.add('border-gray-100'); });
@@ -396,7 +394,6 @@
             window.renderOrders(searchTerm);
         };
 
-        // --- RENDER ORDERS ---
         window.renderOrders = function(searchTerm = '') {
             const containers = { success: document.getElementById('successOrdersList'), pending: document.getElementById('pendingOrdersList'), returns: document.getElementById('returnOrdersList'), refunds: document.getElementById('refundOrdersList') };
             Object.values(containers).forEach(c => c.innerHTML = '');
@@ -439,7 +436,6 @@
             return `<div class="glass-card p-5 rounded-[1.5rem] shadow-sm flex flex-col justify-between vip-glow bg-white/90 ${cardClass}"><div class="flex justify-between items-start mb-3 pb-3"><div class="flex gap-4 w-[75%]"><div class="w-16 h-16 rounded-xl overflow-hidden bg-gray-50 shrink-0 border border-emerald/10 shadow-inner"><img src="${order.imgSrc}" loading="lazy" class="w-full h-full object-cover"></div><div class="min-w-0"><h4 class="text-forest font-bold text-[13px] leading-tight truncate">${order.productName}</h4><p class="text-gray-400 font-bold text-[9px] mt-1.5 uppercase tracking-wide">Var: <span class="text-emerald">${order.color || 'N/A'}</span> | Pk: <span class="text-emerald">${order.size || 'N/A'}</span> | Qty: <span class="text-emerald">${order.quantity || 1}</span></p><p class="text-gray-400 font-medium text-[9px] mt-1"><i class="far fa-clock text-emerald mr-0.5"></i> ${order.timestamp}</p></div></div><div class="w-[25%] text-right"><span class="px-2 py-1 rounded-md text-[9px] font-bold uppercase tracking-wider block text-center shadow-sm ${badgeClass}">${order.status}</span></div></div><div class="text-[10px] text-forest font-medium space-y-1.5 bg-emerald/5 p-3 rounded-xl border border-emerald/10 shadow-inner"><div class="flex justify-between border-b border-emerald/10 pb-1.5 mb-1.5"><span class="text-gray-400">Order ID:</span> <span class="font-mono font-bold">${order.orderId}</span></div><p class="truncate"><i class="fas fa-user text-emerald w-4"></i> ${order.customerName}</p><p><i class="fas fa-phone text-emerald w-4"></i> +91 ${order.contactPhone}</p><p class="truncate"><i class="fas fa-map-marker-alt text-emerald w-4"></i> ${order.address}</p><div class="text-forest font-extrabold text-sm mt-2 pt-2 border-t border-emerald/10 flex justify-between items-center"><span>Total Value:</span> <span class="text-emerald text-base">₹${order.totalValue}</span></div></div>${btnHtml}</div>`;
         };
 
-        // --- COMPRESSOR ---
         window.handleExtremeCompression = function(inputElement, targetId) {
             const file = inputElement.files[0];
             if(!file) return;
@@ -461,7 +457,7 @@
                         const colName = targetId.replace('b64_', ''); const prevDiv = document.getElementById(`prev_${colName}`);
                         if(prevDiv) prevDiv.innerHTML = `<img src="${compressedBase64}" class="w-full h-full object-cover rounded-lg mt-2 border-2 border-emerald/30 shadow-sm">`;
                     }
-                    showPremiumToast(`✅ Image optimized for App!`);
+                    showPremiumToast(`✅ Image optimized!`);
                 }
             };
         };
@@ -475,7 +471,6 @@
             else { imgEl.classList.add('hidden'); iconEl.classList.remove('hidden'); }
         };
 
-        // --- SIZE & COLOR (Weights & Variants) ---
         window.toggleSize = function(btn, val) {
             btn.classList.toggle('selected');
             if(window.selectedSizes.has(val)) window.selectedSizes.delete(val); else window.selectedSizes.add(val);
@@ -507,11 +502,11 @@
             });
         };
 
-        // --- PRODUCT CRUD (FIRESTORE FIX for String/Number calculation in Cart) ---
+        // --- PRODUCT CRUD WITH BULLETPROOF ERROR TRAP ---
         document.getElementById('productForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('saveProductBtn');
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Deploying...';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Deploying to Server...';
             btn.disabled = true;
             
             const editId = document.getElementById('editProductId').value;
@@ -530,7 +525,6 @@
                 });
             }
 
-            // 🚨 STRICTLY CONVERTING PRICES TO NUMBER HERE TO FIX CART CALCULATIONS
             const rawPrice = document.getElementById('pPrice').value;
             const rawOffer = document.getElementById('pDiscount').value;
 
@@ -548,18 +542,24 @@
             };
 
             try {
+                // 🔥 Saving strictly to Firestore
                 await setDoc(doc(db, "products", key), payload);
-                showPremiumToast(editId ? "Harvest Updated!" : "Harvest Deployed!");
+                showPremiumToast(editId ? "Harvest Updated Successfully!" : "Harvest Deployed to Server!");
                 document.getElementById('productForm').reset();
                 document.getElementById('editProductId').value = "";
                 window.selectedSizes.clear(); window.selectedColors.clear();
                 document.querySelectorAll('.size-btn, .variant-btn').forEach(b => b.classList.remove('selected'));
                 window.generateColorUploaders();
-            } catch(e) { console.log(e); showPremiumToast("Error deploying harvest", "error"); }
-            btn.innerHTML = '<i class="fas fa-upload mr-2"></i> Publish Harvest'; btn.disabled = false;
+            } catch(error) {
+                console.error("Firestore Save Error:", error);
+                alert("🚨 FIRESTORE WRITE FAILED:\n" + error.message + "\n\n(Check if Database is created in Firebase Console)");
+                showPremiumToast("Error deploying harvest", "error");
+            }
+            btn.innerHTML = '<i class="fas fa-upload mr-2"></i> Publish Harvest'; 
+            btn.disabled = false;
         });
 
-        // --- INVENTORY (FIRESTORE) ---
+        // --- INVENTORY ---
         function loadInventory() {
             onSnapshot(collection(db, 'products'), (snapshot) => { 
                 const inv = document.getElementById('inventoryContainer'); 
@@ -606,7 +606,7 @@
             } 
         };
 
-        // --- CATEGORIES (FIRESTORE) - Must ensure the Select dropdown populates correctly ---
+        // --- CATEGORIES ---
         function loadCategories() {
             onSnapshot(collection(db, 'categories'), (snapshot) => { 
                 const list = document.getElementById('categoriesList'); 
@@ -636,7 +636,7 @@
 
         window.deleteCategory = async (k) => { if(confirm("Delete this aisle?")) { await deleteDoc(doc(db, "categories", k)); showPremiumToast("Aisle Deleted!"); } };
 
-        // --- ORDERS MGMT (FIRESTORE) ---
+        // --- ORDERS MGMT ---
         function loadOrders() {
             const itemsQuery = query(collectionGroup(db, 'items'));
             onSnapshot(itemsQuery, async (snapshot) => {
@@ -661,10 +661,7 @@
                     }
                 }
                 window.renderOrders();
-            }, (error) => {
-                console.error(error);
-                if(error.message.includes('requires an index')) { console.log("🔥 FIRESTORE INDEX REQUIRED FOR ORDERS! Click the link in Firebase console error log."); }
-            });
+            }, (error) => { console.error(error); });
         }
 
         window.updateOrderStatus = async (userPath, itemKey, status) => {
@@ -675,7 +672,7 @@
 
         window.deleteOrder = async (userPath, itemKey) => { if(confirm("Archive from Admin Panel?")) { await updateDoc(doc(db, "carts", userPath, "items", itemKey), { adminHidden: true, adminHiddenAt: Date.now() }); showPremiumToast("Order Archived!"); } };
 
-        // --- BANNERS (HERO) ---
+        // --- BANNERS ---
         function loadBanners() {
             onSnapshot(collection(db, 'banners_list'), (snapshot) => { 
                 const container = document.getElementById('bannersListContainer'); 
@@ -698,21 +695,6 @@
         });
 
         window.deleteDBNode = async (collectionName, key) => { if(confirm("Confirm Delete?")) { await deleteDoc(doc(db, collectionName, key)); showPremiumToast("Deleted successfully!"); } };
-    </script>
-
-    <script>
-        document.addEventListener('contextmenu', function(e) { e.preventDefault(); return false; }, true);
-        document.onkeydown = function(e) {
-            if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) || (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 83 || e.keyCode === 80))) { e.preventDefault(); document.getElementById('securityShield').classList.add('show'); return false; }
-        };
-        document.addEventListener('dragstart', function(e) { e.preventDefault(); return false; }, true);
-        document.addEventListener('selectstart', function(e) { e.preventDefault(); return false; }, true);
-        
-        let debugCount = 0;
-        setInterval(function() {
-            const start = performance.now(); try { (function(){})['constructor']('debugger')(); } catch(e) {}
-            if (performance.now() - start > 100) { debugCount++; if (debugCount > 1) { document.getElementById('securityShield').classList.add('show'); } } else { debugCount = 0; }
-        }, 1000);
     </script>
 </body>
 </html>
